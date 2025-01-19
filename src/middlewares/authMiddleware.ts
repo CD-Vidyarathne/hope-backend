@@ -1,6 +1,6 @@
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
-import { Roles } from "../types/roles";
+import { Roles } from "../types/enums";
 
 export const authenticate = (
   req: Request,
@@ -15,10 +15,16 @@ export const authenticate = (
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET!);
-    if (typeof decoded === "object" && "id" in decoded && "role" in decoded) {
+    if (
+      typeof decoded === "object" &&
+      "id" in decoded &&
+      "email" in decoded &&
+      "role" in decoded
+    ) {
       req.user = {
-        id: decoded.id as number,
-        role: decoded.role as Roles,
+        id: decoded.id as string,
+        email: decoded.email as string,
+        role: decoded.role as string,
       };
     }
     next();

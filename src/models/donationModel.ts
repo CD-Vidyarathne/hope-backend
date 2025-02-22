@@ -16,7 +16,6 @@ export default class Donation extends Model {
   @Column({
     type: DataType.STRING,
     primaryKey: true,
-    allowNull: false,
   })
   id!: string;
 

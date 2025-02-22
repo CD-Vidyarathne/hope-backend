@@ -1,5 +1,6 @@
-import { body } from "express-validator";
+import { body, param } from "express-validator";
 import { Gender, Roles, DonationType } from "../types/enums";
+import { RequestStatus, RequestType } from "../types/enums";
 
 export const signUpValidationRules = [
   body("name")
@@ -39,9 +40,34 @@ export const loginValidationRules = [
 export const createRequestValidationRules = [
   body("neededAmount")
     .isFloat({ gt: 0 })
-    .withMessage("Needed amount must be a positive number."),
+    .withMessage("Needed amount must be a positive number"),
+
+  body("reason").isString().trim().notEmpty().withMessage("Reason is required"),
+
+  body("description")
+    .isString()
+    .trim()
+    .notEmpty()
+    .withMessage("Description is required"),
 
   body("donationType")
     .isIn(Object.values(DonationType))
-    .withMessage("Donation type must be one of the valid types."),
+    .withMessage("Invalid donation type"),
+
+  // body("documentURL")
+  //   .optional()
+  //   .isURL()
+  //   .withMessage("Document URL must be a valid URL"),
+
+  body("requestType")
+    .isIn(Object.values(RequestType))
+    .withMessage("Invalid request type"),
+];
+
+export const updateRequestStatusValidationRules = [
+  param("id").isString().notEmpty().withMessage("Request ID is required"),
+
+  body("status")
+    .isIn(Object.values(RequestStatus))
+    .withMessage("Invalid request status"),
 ];

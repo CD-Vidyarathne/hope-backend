@@ -6,7 +6,7 @@ import {
   BeforeCreate,
   BelongsTo,
   ForeignKey,
-  BelongsToMany,
+  HasMany,
 } from "sequelize-typescript";
 import { EventStatus } from "../types/enums";
 import { generateCustomId } from "../utils/generateId";
@@ -18,7 +18,6 @@ export default class Event extends Model {
   @Column({
     type: DataType.STRING,
     primaryKey: true,
-    allowNull: false,
   })
   id!: string;
 
@@ -36,13 +35,19 @@ export default class Event extends Model {
     type: DataType.STRING,
     allowNull: false,
   })
-  venue!: string;
+  eventName!: string;
 
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
-  time!: string;
+  purpose!: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+  })
+  venue!: string;
 
   @Column({
     type: DataType.DATE,
@@ -51,10 +56,10 @@ export default class Event extends Model {
   date!: Date;
 
   @Column({
-    type: DataType.ENUM(...Object.values(EventStatus)),
+    type: DataType.STRING,
     allowNull: false,
   })
-  status!: EventStatus;
+  time!: string;
 
   @Column({
     type: DataType.STRING,
@@ -62,11 +67,31 @@ export default class Event extends Model {
   })
   eventPicURL!: string;
 
-  @BelongsToMany(() => User, () => EventVolunteer)
-  volunteers!: User[];
+  @Column({
+    type: DataType.JSON,
+    allowNull: true,
+  })
+  committeeEmails!: string[];
+
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: false,
+  })
+  participantsExpected!: number;
+
+  @Column({
+    type: DataType.ENUM(...Object.values(EventStatus)),
+    allowNull: false,
+    defaultValue: EventStatus.PENDING,
+  })
+  status!: EventStatus;
+
+  @HasMany(() => EventVolunteer)
+  volunteers!: EventVolunteer[];
 
   @BeforeCreate
   static async generateId(event: Event) {
+    console.log("Is this working");
     event.id = await generateCustomId("Event", "E", event.sequelize);
   }
 }

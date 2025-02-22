@@ -23,7 +23,7 @@ export enum RequestStatus {
 }
 
 export enum DonationType {
-  ONE_TIME = "one time",
+  ONE_TIME = "one-time",
   MONTHLY = "monthly",
 }
 

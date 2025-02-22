@@ -6,6 +6,7 @@ import {
   BelongsTo,
   ForeignKey,
   BeforeCreate,
+  AllowNull,
 } from "sequelize-typescript";
 import User from "./userModel";
 import { generateCustomId } from "../utils/generateId";
@@ -16,7 +17,6 @@ export default class Request extends Model {
   @Column({
     type: DataType.STRING,
     primaryKey: true,
-    allowNull: false,
   })
   id!: string;
 
@@ -41,6 +41,25 @@ export default class Request extends Model {
     allowNull: false,
   })
   neededAmount!: number;
+
+  @Column({
+    type: DataType.FLOAT,
+    allowNull: false,
+    defaultValue: 0,
+  })
+  currentlyFilled!: number;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+  })
+  reason!: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+  })
+  description!: string;
 
   @Column({
     type: DataType.ENUM(...Object.values(RequestStatus)),
@@ -69,6 +88,7 @@ export default class Request extends Model {
 
   @BeforeCreate
   static async generateId(request: Request) {
+    console.log("is this happenning");
     request.id = await generateCustomId("Request", "R", request.sequelize);
   }
 }
